@@ -46,7 +46,7 @@ jobs:
           command: |
             cd frontend
             npm install
-            npn test 
+            npm test 
 
   test-backend: 
     docker:
