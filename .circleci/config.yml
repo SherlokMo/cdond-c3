@@ -71,7 +71,7 @@ jobs:
       - restore_cache:
           keys:
             - frontend-modules
-      - runs:
+      - run:
           name: scan frontend
           command: |
             cd frontend
