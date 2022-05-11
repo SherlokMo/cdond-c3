@@ -32,7 +32,21 @@ jobs:
           key: backend-modules
           paths: 
             - backend/node_modules
-          
+
+  test-frontend: 
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - frontend-modules
+      - run: 
+          name: unit testing frontend
+          command: |
+            cd frontend
+            npm install
+            npn test 
 workflows:
   default:  
     jobs:
