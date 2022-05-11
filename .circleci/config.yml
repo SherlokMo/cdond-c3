@@ -47,6 +47,22 @@ jobs:
             cd frontend
             npm install
             npn test 
+
+  test-backend: 
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - backend-modules
+      - run: 
+          name: unit testing backend
+          command: |
+            cd backend
+            npm install
+            npm test
+  
 workflows:
   default:  
     jobs:
