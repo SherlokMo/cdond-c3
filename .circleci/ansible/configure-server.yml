@@ -20,6 +20,7 @@
     - name: "install python for Ansible."
       apt:
         name: python3-pip
+        update_cache: true
         state: present
 
   # Get the environment variables from CircleCI and add to the EC2 instance
