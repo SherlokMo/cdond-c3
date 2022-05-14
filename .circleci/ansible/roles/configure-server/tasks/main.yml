@@ -5,25 +5,31 @@
       update_cache: yes
 
   - name: download build essentials
+    become: true
     apt:
       name: build-essential
-      state: latest    
+      upgrade: yes    
 
   - name: Install Nodejs and NPM
     apt: 
       name: ["nodejs", "npm"]
       state: latest
 
-  - name: instann node manager
+  - name: "install n"
     become: true
     npm:
       name: n
       global: yes
       production: yes
-    
-  - name: install nodejs 13.8
+
+  - name: Install node 13.8
     become: true
     shell: n 13.8.0
 
-  - name: donwload PM2 
-    shell: npm install pm2 -g && pm2 update
+  - name: "install pm2"
+    become: true
+    npm:
+      name: pm2
+      global: yes
+      production: yes
+      state: present
