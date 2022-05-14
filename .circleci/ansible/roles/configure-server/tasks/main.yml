@@ -4,11 +4,10 @@
     apt:
       update_cache: yes
 
-  - name: download build essentials
+  - name: "upgrade apt packages"
     become: true
     apt:
-      name: build-essential
-      upgrade: yes    
+      upgrade: "yes"
 
   - name: Install Nodejs and NPM
     apt: 
