@@ -1,14 +1,14 @@
-- name: creates directory for backend
+- name: creates directory for code
   file:
-    path: ~/backend
+    path: ~/code
     state: directory
 
-- name: unarchive artifact.tar.gz
+- name: extracting code
   unarchive:
     src: artifact.tar.gz
-    dest: ~/backend
+    dest: ~/code
 
-- name: npm install
+- name: Installing modules
   command: npm install
   args:
     chdir: ~/backend
@@ -17,9 +17,3 @@
   command: pm2 start npm -- start
   args:
     chdir: ~/backend
-
-- name: pm2 start -f ./main.js
-  command: pm2 start -f ./main.js
-  ignore_errors: true
-  args:
-    chdir: ~/backend/dist
