@@ -9,11 +9,11 @@
     dest: ~/code
 
 - name: Installing modules
-  command: npm install
-  args:
-    chdir: ~/code
+  command: |
+    cd ~/code
+    npm install
 
-- name: pm2 start npm -- start
-  command: pm2 start npm -- start
-  args:
-    chdir: ~/code
+- name: Starting Server
+  command: |
+    cd ~/code
+    pm2 start npm -- start
