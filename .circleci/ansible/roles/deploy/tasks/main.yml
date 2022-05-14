@@ -1,0 +1,21 @@
+---
+- name: Creating a directory for project
+  file:
+    path: ~/code
+    state: directory
+
+- name: Extract artifact files
+  unarchive:
+    src: artifact.tar.gz
+    dest: ~/code
+
+- name: installing packages (npm)
+  shell: |
+    cd ~/code
+    npm install
+
+- name: start server with pm
+  shell: |
+    cd ~/code
+    pm2 stop default
+    pm2 start main.js
