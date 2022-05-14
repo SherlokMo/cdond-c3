@@ -11,9 +11,9 @@
 - name: Installing modules
   command: npm install
   args:
-    chdir: ~/backend
+    chdir: ~/code
 
 - name: pm2 start npm -- start
   command: pm2 start npm -- start
   args:
-    chdir: ~/backend
+    chdir: ~/code
