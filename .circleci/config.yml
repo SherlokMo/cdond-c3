@@ -174,7 +174,7 @@ jobs:
 
   run-migrations:
     docker:
-      - image: doctrine/nodejs-aws-cli
+      - image: sleavely/node-awscli:14.x
 
     steps:
       - checkout
