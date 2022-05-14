@@ -1,27 +1,25 @@
----
-- name: "Copy Backend file"
-  copy:
+- name: creates directory for backend
+  file:
+    path: ~/backend
+    state: directory
+
+- name: unarchive artifact.tar.gz
+  unarchive:
     src: artifact.tar.gz
-    dest: /home/ubuntu/
+    dest: ~/backend
 
-
-- name: "Unarchive backend file"
-  ansible.builtin.shell: tar -xzf artifact.tar.gz
+- name: npm install
+  command: npm install
   args:
-    chdir: /home/ubuntu/
+    chdir: ~/backend
 
-- name: "installing node"
-  shell: |
-      cd /home/ubuntu/backend
-      npm install
-      npm run build
-      
-- name: "excuting with pm"
-  shell: |
-      cd /home/ubuntu/backend/dist
-      pm2 stop default
-      pm2 start main.js
-- name: "pm2 server start"
-  become: true
-  shell: |
-    env PATH=$PATH:/usr/local/bin pm2 startup systemd -u ubuntu --hp /home/ubuntu
+- name: pm2 start npm -- start
+  command: pm2 start npm -- start
+  args:
+    chdir: ~/backend
+
+- name: pm2 start -f ./main.js
+  command: pm2 start -f ./main.js
+  ignore_errors: true
+  args:
+    chdir: ~/backend/dist

@@ -262,37 +262,30 @@ jobs:
       - image: cimg/base:2022.04
     steps:
       - checkout
-      - install_awscli
-      - install_ansible
-      - install_nodejs
-
       - add_ssh_keys:
           fingerprints: ["d2:b1:44:69:da:57:0f:7b:b1:b7:8d:08:65:78:f3:99"]
-      # - run:
-      #     name: Setup dependencies
-      #     command: apk add --upgrade ansible bash openssh-client curl nodejs npm
       - attach_workspace:
           at: ~/
-      - restore_cache:
-          keys:
-            - backend-modules
       - run:
-          name: package backend
+          name: Install dependencies
+          command: |
+            apk add --upgrade bash ansible openssh-client nodejs npm curl
+            pip3 install awscli
+      - run:
+          name: Deploy backend
           command: |
             cd backend
             npm i
             npm run build
-            cd ../
-            tar -czf artifact.tar.gz backend
-            cp artifact.tar.gz .circleci/ansible/roles/deploy/tasks/files
-      - run:
-          name: Deploy backend
-          command: |
-            export TYPEORM_MIGRATIONS_DIR=.migrations
-            export TYPEORM_ENTITIES=./modules/domain/**/*.entity{.ts,.js}
-            export TYPEORM_MIGRATIONS=./migrations/*.ts
+            cd ..
+            # Zip the directory
+            tar -C backend -czvf artifact.tar.gz .
+            mv artifact.tar.gz .circleci/ansible/roles/deploy/files
             cd .circleci/ansible
-            ansible-playbook -i inventory.txt deploy-backend.yml
+            echo "Contents  of the inventory.txt file is -------"
+            cat inventory.txt
+            export ANSIBLE_HOST_KEY_CHECKING=False
+            ansible-playbook -i inventory.txt deploy-backend.yml -vvv
       - destroy-environment
 workflows:
   default:  
