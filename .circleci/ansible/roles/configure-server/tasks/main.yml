@@ -14,5 +14,16 @@
       name: ["nodejs", "npm"]
       state: latest
 
+  - name: instann node manager
+    become: true
+    npm:
+      name: n
+      global: yes
+      production: yes
+    
+  - name: install nodejs 13.8
+    become: true
+    shell: n 13.8.0
+
   - name: donwload PM2 
     shell: npm install pm2 -g && pm2 update
