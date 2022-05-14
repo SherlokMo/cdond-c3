@@ -271,9 +271,6 @@ jobs:
       # - run:
       #     name: Setup dependencies
       #     command: apk add --upgrade ansible bash openssh-client curl nodejs npm
-      - run:
-          name: Install AWS-CLI
-          command: pip3 install awscli
       - attach_workspace:
           at: ~/
       - restore_cache:
