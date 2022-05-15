@@ -264,7 +264,7 @@ jobs:
             ansible-playbook -i inventory.txt deploy-backend.yml
       - destroy-environment
 
-    smoke_test:
+    smoke-test:
       docker:
         - image: python:3.7-alpine3.11
       steps: 
