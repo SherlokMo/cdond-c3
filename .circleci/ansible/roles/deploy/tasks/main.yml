@@ -1,4 +1,5 @@
 - name: creates directory for code
+  become: true
   command: mkdir /code
 
 - name: extracting code
