@@ -11,9 +11,9 @@
 - name: Installing modules
   command: npm install
   args:
-    chrdir: ~/code
+    chdir: ~/code
 
 - name: Starting Server
   command: pm2 start npm -- start
   args:
-    chrdir: ~/code/dist
+    chdir: ~/code/dist
