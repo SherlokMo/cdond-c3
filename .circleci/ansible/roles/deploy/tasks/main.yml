@@ -1,19 +1,17 @@
 - name: creates directory for code
-  file:
-    path: ~/code
-    state: directory
+  command: mkdir /code
 
 - name: extracting code
   unarchive:
     src: artifact.tar.gz
-    dest: ~/code
+    dest: /code
 
 - name: Installing modules
   command: |
-    cd ~/code
+    cd /code
     npm install
 
 - name: Starting Server
   command: |
-    cd ~/code
+    cd /code
     pm2 start npm -- start
