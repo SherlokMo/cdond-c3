@@ -264,44 +264,44 @@ jobs:
             ansible-playbook -i inventory.txt deploy-backend.yml
       - destroy-environment
 
-    smoke-test:
-      docker:
-        - image: python:3.7-alpine3.11
-      steps: 
-        - checkout
-        - run:
-            name: Install dependencies
-            command: apk add --upgrade bash nodejs npm curl
-        - run:
-            name: Install AWS-CLI
-            command: pip3 install awscli
-        - run: sleep 60 # wait for instance to be ready
-        - run: 
-            name: Smoke Test Backend
-            command: |
-              export BACKEND_IP=$(aws ec2 describe-instances \
-              --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --output text)
-              export BACKEND_URL="http://${BACKEND_IP}:3030"
-              echo ${BACKEND_URL}
-              if curl "${BACKEND_URL}/api/status" | grep "ok"
-              then
-                return 0
-              else 
-                return 1
-              fi
-        - run:
-            name: Smoke Test frontend
-            command: |
-              FRONTEND_URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-east-1.amazonaws.com/#/employees"
-              echo ${FRONTEND_URL}
-              if curl -s FRONTEND_URL | grep "Welcome"
-              then
-                return 1
-              else
-                return 1
-        - destroy-environment
+  smoke-test:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps: 
+      - checkout
+      - run:
+          name: Install dependencies
+          command: apk add --upgrade bash nodejs npm curl
+      - run:
+          name: Install AWS-CLI
+          command: pip3 install awscli
+      - run: sleep 60 # wait for instance to be ready
+      - run: 
+          name: Smoke Test Backend
+          command: |
+            export BACKEND_IP=$(aws ec2 describe-instances \
+            --query 'Reservations[*].Instances[*].PublicIpAddress' \
+            --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+            --output text)
+            export BACKEND_URL="http://${BACKEND_IP}:3030"
+            echo ${BACKEND_URL}
+            if curl "${BACKEND_URL}/api/status" | grep "ok"
+            then
+              return 0
+            else 
+              return 1
+            fi
+      - run:
+          name: Smoke Test frontend
+          command: |
+            FRONTEND_URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-east-1.amazonaws.com/#/employees"
+            echo ${FRONTEND_URL}
+            if curl -s FRONTEND_URL | grep "Welcome"
+            then
+              return 1
+            else
+              return 1
+      - destroy-environment
 
 workflows:
   default:  
