@@ -16,6 +16,26 @@ commands:
             aws cloudformation delete-stack --stack-name udapeople-backend-<<parameters.workflowId>>
             aws s3 rm s3://udapeople-<<parameters.workflowId>> --recursive
             aws cloudformation delete-stack --stack-name udapeople-frontend-<<parameters.workflowId>>
+  
+  revert-migrations:
+    description: Revert the last migration if successfully run in the current workflow.
+    parameters:
+      Workflow_ID:
+        type: string
+        default: ${CIRCLE_WORKFLOW_ID:0:7}
+    steps:
+      - run:
+          name: Revert migrations
+          when: on_fail
+          command: |
+            SUCCESS=$(curl --insecure https://kvdb.io/RYY44FDUScfroiNySyENq7/migration-<< parameters.Workflow_ID >>)
+            if(( $SUCCESS==1 )); 
+            then
+              cd ~/project/backend
+              npm install
+              npm run migration:revert
+            fi
+
 jobs:
   build-frontend: 
     docker:
@@ -206,6 +226,7 @@ jobs:
             fi
             
       - destroy-environment
+      - revert-migrations
 
   deploy-frontend:
     docker:
@@ -233,6 +254,7 @@ jobs:
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
       - destroy-environment
+      - revert-migrations
 
   deploy-backend:
     docker:
@@ -263,6 +285,7 @@ jobs:
             echo "Contents  of the inventory.txt file is -------"
             ansible-playbook -i inventory.txt deploy-backend.yml
       - destroy-environment
+      - revert-migrations
 
   smoke-test:
     docker:
@@ -287,7 +310,7 @@ jobs:
             echo ${BACKEND_URL}
             if curl "${BACKEND_URL}/api/status" | grep "ok"
             then
-              return 0
+              return 1
             else 
               return 1
             fi
@@ -303,6 +326,7 @@ jobs:
               return 1
             fi
       - destroy-environment
+      - revert-migrations
 
 workflows:
   default:  
