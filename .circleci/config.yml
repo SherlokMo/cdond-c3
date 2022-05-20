@@ -340,7 +340,7 @@ jobs:
               list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
               --no-paginate --output text)"
             
-            curl -d "$OldWorkflowID" https://kvdb.io/RYY44FDUScfroiNySyENq7/Old_Workflow_ID 
+            curl -d "${OldWorkflowID}" https://kvdb.io/RYY44FDUScfroiNySyENq7/Old_Workflow_ID 
       - run:
           name: update distribution
           command: |
@@ -358,7 +358,7 @@ jobs:
       steps:
         - checkout
         - run:
-            name: Get old stack workflow id
+            name: Get old stack workflow id and Remove old stacks and files
             command: |
               # your code here
               export OldWorkflowID=$(curl --insecure https://kvdb.io/RYY44FDUScfroiNySyENq7/Old_Workflow_ID)
@@ -367,9 +367,6 @@ jobs:
               export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
                       --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
               echo Stack names: "${STACKS[@]}"
-        - run:
-            name: Remove old stacks and files
-            command: |
               if [ -z "$OldWorkflowID" ]
               then
                   echo "No OldWorkflowID found."
@@ -380,7 +377,7 @@ jobs:
                       aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
                       aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
                   else
-                      echo "$OldWorkflowID==$NEW_WORKFLOW_ID: the old and new stacks are the same, no changes applied"
+                      echo "$OldWorkflowID==$CIRCLE_WORKFLOW_ID:0:7: the old and new stacks are the same, no changes applied"
                   fi
               fi
 workflows:
